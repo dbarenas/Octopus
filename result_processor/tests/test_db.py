@@ -30,14 +30,14 @@ class TestDB(unittest.TestCase):
             result = context_loader()
 
         # Assert that the result is correct
-        self.assertIn('doc1', result)
-        self.assertIn('doc2', result)
-        self.assertIn('Documento No Clasificado', result)
-        self.assertIn('desc1', result['doc1'])
-        self.assertIn('campo1', result['doc1'])
-        self.assertIn('campo2', result['doc1'])
-        self.assertIn('desc2', result['doc2'])
-        self.assertIn('campo3', result['doc2'])
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0]['name'], 'doc1')
+        self.assertEqual(result[1]['name'], 'doc2')
+        self.assertIn('desc1', result[0]['description'])
+        self.assertIn('campo1', result[0]['description'])
+        self.assertIn('campo2', result[0]['description'])
+        self.assertIn('desc2', result[1]['description'])
+        self.assertIn('campo3', result[1]['description'])
 
     @patch('src.db.insert_results.get_db_connection')
     @patch('src.db.insert_results.get_or_create_tipo_expediente')

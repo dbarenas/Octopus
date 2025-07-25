@@ -32,7 +32,7 @@ def context_loader():
             )
             contexto[nombre_doc].campos.append(campo)
 
-    documents_dict = {}
+    prompt_infos = []
     for doc in contexto.values():
         campos = "\n- ".join([
             f"{c.nombre} ({c.tipo}){' [requerido]' if c.requerido else ''}"
@@ -42,10 +42,9 @@ def context_loader():
             f"{doc.descripcion}\nCampos esperados:\n- {campos}"
             if doc.campos else doc.descripcion
         )
-        documents_dict[doc.nombre] = descripcion_completa
+        prompt_infos.append({
+            "name": doc.nombre,
+            "description": descripcion_completa,
+        })
 
-    documents_dict["Documento No Clasificado"] = (
-        "Selección en caso de que el documento no pueda ser clasificado en ninguno de los documentos descritos anteriormente."
-    )
-
-    return documents_dict
+    return prompt_infos
