@@ -8,20 +8,23 @@ from index import lambda_handler
 class TestIndex(unittest.TestCase):
 
     @patch('index.context_loader')
-    @patch('index.clasificar_documento')
+    @patch('index.create_multi_prompt_chain')
     @patch('index.insert_results')
-    def test_lambda_handler_success(self, mock_insert_results, mock_clasificar_documento, mock_context_loader):
+    @patch('index.init_model')
+    def test_lambda_handler_success(self, mock_init_model, mock_insert_results, mock_create_multi_prompt_chain, mock_context_loader):
         # Mock the context loader
-        mock_context_loader.return_value = {'doc1': 'desc1'}
+        mock_context_loader.return_value = [{'name': 'doc1', 'description': 'desc1'}]
 
         # Mock the classification result
-        mock_clasificar_documento.return_value = DocumentClassification(
+        mock_chain = MagicMock()
+        mock_chain.run.return_value = DocumentClassification(
             expediente=ExpedienteModel(id=1, tipo_expediente='test'),
             documento=DocumentoModel(tipo_documento='test', nombre_archivo='test.txt'),
             campos_extraidos=[],
             confianza_total=0.9,
             razon='test'
         )
+        mock_create_multi_prompt_chain.return_value = mock_chain
 
         # Mock the insert_results function
         mock_insert_results.return_value = {'status': 'success'}

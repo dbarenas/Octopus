@@ -1,11 +1,10 @@
 import json
 from langchain_aws import ChatBedrockConverse
 from pydantic import ValidationError
-from src.prompt.classification import create_document_classification_prompt
+from src.prompt.extraction import create_multi_prompt_chain, create_field_extraction_prompt
 from src.db import context_loader
 from src.db import insert_results
 from src.models.result import DocumentClassification
-from langchain.prompts import PromptTemplate
 
 
 def init_model():
@@ -14,19 +13,7 @@ def init_model():
         region_name="eu-south-2",
         temperature=0.2,
         max_tokens=1024
-    ).with_structured_output(DocumentClassification)
-
-
-def clasificar_documento(nombre_documento: str, contenido_documento: str, documents_dict: dict) -> DocumentClassification:
-    prompt = create_document_classification_prompt(documents=documents_dict)
-    model = init_model()
-    chain = prompt | model
-
-    resultado = chain.invoke({
-        "document_name": nombre_documento,
-        "document_content": contenido_documento
-    })
-    return resultado
+    )
 
 
 def lambda_handler(event, context):
@@ -46,15 +33,22 @@ def lambda_handler(event, context):
 
     try:
         # 1. Obtener contexto actualizado desde BD
-        documentos_dict = context_loader()
+        prompt_infos = context_loader()
 
-        # 2. Ejecutar clasificación
-        resultado = clasificar_documento(nombre, contenido, documentos_dict)
+        # 2. Crear default prompt
+        default_prompt = create_field_extraction_prompt("Documento con campos no especificados")
 
-        # 3. Insertar resultado en base de datos
+        # 3. Crear multi-prompt chain
+        llm = init_model()
+        chain = create_multi_prompt_chain(llm, prompt_infos, default_prompt)
+
+        # 4. Ejecutar clasificación
+        resultado = chain.run(nombre, contenido)
+
+        # 5. Insertar resultado en base de datos
         insert_results(resultado)
 
-        # 4. Responder
+        # 6. Responder
         return {
             "statusCode": 200,
             "body": json.dumps({
