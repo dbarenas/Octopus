@@ -3,7 +3,6 @@
 from langchain.prompts import PromptTemplate
 from src.db import context_loader
 from src.prompt.prompt_sections.classification_content import get_classification_instructions
-from src.prompt.prompt_sections.structured_output import get_structured_output_format
 
 
 def create_document_classification_prompt(documents: dict) -> PromptTemplate:
@@ -12,7 +11,6 @@ def create_document_classification_prompt(documents: dict) -> PromptTemplate:
     ])
 
     instructions = get_classification_instructions(document_types_section)
-    output_format = get_structured_output_format()
 
     template = f"""
             {instructions}
@@ -23,8 +21,6 @@ def create_document_classification_prompt(documents: dict) -> PromptTemplate:
             ## CONTENIDO DEL DOCUMENTO:
 
             {{{{document_content}}}}
-
-            {output_format}
             """
 
     return PromptTemplate(
