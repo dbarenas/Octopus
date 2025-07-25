@@ -8,6 +8,7 @@ class CampoContexto(BaseModel):
     nombre: str
     tipo: str
     requerido: Optional[bool] = False
+    descripcion: str
 
 
 class DocumentoContexto(BaseModel):
