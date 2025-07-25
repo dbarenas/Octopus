@@ -1,10 +1,10 @@
 import json
 from langchain_aws import ChatBedrockConverse
 from pydantic import ValidationError
-from prompt.classification import create_document_classification_prompt
-from db import context_loader
-from db import insert_results  # función que inserta el resultado en la BD
-from models.result import DocumentClassification  # Pydantic model
+from src.prompt.classification import create_document_classification_prompt
+from src.db import context_loader
+from src.db import insert_results
+from src.models.result import DocumentClassification
 from langchain.prompts import PromptTemplate
 
 
@@ -26,7 +26,7 @@ def clasificar_documento(nombre_documento: str, contenido_documento: str, docume
         "document_name": nombre_documento,
         "document_content": contenido_documento
     })
-    return resultado  # Instancia DocumentClassification
+    return resultado
 
 
 def lambda_handler(event, context):
@@ -52,29 +52,15 @@ def lambda_handler(event, context):
         resultado = clasificar_documento(nombre, contenido, documentos_dict)
 
         # 3. Insertar resultado en base de datos
-        # Aquí deberías construir el dict esperado para insert_results
-        resultado_insert = {
-            "expediente": {
-                "id": None,
-                "tipo_expediente": "Clasificación automática"
-            },
-            "documento": {
-                "tipo_documento": resultado.tipo_documento,
-                "nombre_archivo": nombre
-            },
-            "campos_extraidos": [],  # en clasificación normalmente no extraes campos
-            "confianza_total": resultado.confianza,
-            "razon": resultado.razon
-        }
-        insert_results(resultado_insert)
+        insert_results(resultado)
 
         # 4. Responder
         return {
             "statusCode": 200,
             "body": json.dumps({
                 "nombre": nombre,
-                "tipo_documento": resultado.tipo_documento,
-                "confianza": resultado.confianza,
+                "tipo_documento": resultado.documento.tipo_documento,
+                "confianza": resultado.confianza_total,
                 "razon": resultado.razon
             }, ensure_ascii=False)
         }

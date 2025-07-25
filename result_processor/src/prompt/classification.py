@@ -1,14 +1,12 @@
 # prompt/classification.py
 
 from langchain.prompts import PromptTemplate
-from db import context_loader
-from prompt.prompt_sections.classification_content import get_classification_instructions
-from prompt.prompt_sections.structured_output import get_structured_output_format
+from src.db import context_loader
+from src.prompt.prompt_sections.classification_content import get_classification_instructions
+from src.prompt.prompt_sections.structured_output import get_structured_output_format
 
 
-def create_document_classification_prompt() -> PromptTemplate:
-    documents = context_loader()
-
+def create_document_classification_prompt(documents: dict) -> PromptTemplate:
     document_types_section = "\n".join([
         f"- **{name}**: {desc}" for name, desc in documents.items()
     ])

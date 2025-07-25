@@ -1,6 +1,6 @@
 # helpers.py
 
-from models import ExpedienteModel, DocumentoModel, CampoExtraidoModel
+from src.models.result import ExpedienteModel, DocumentoModel, CampoExtraidoModel
 from typing import List
 
 # db/queries.py
