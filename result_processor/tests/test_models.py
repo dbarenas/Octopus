@@ -66,22 +66,23 @@ class TestModels(unittest.TestCase):
 
     def test_campo_contexto_model(self):
         # Test valid data
-        data = {'nombre': 'test', 'tipo': 'test', 'requerido': True}
+        data = {'nombre': 'test', 'tipo': 'test', 'requerido': True, 'descripcion': 'test'}
         model = CampoContexto(**data)
         self.assertEqual(model.nombre, 'test')
         self.assertEqual(model.tipo, 'test')
         self.assertEqual(model.requerido, True)
+        self.assertEqual(model.descripcion, 'test')
 
         # Test invalid data
         with self.assertRaises(ValidationError):
-            CampoContexto(nombre='test', tipo='test', requerido='a')
+            CampoContexto(nombre='test', tipo='test', requerido='a', descripcion='test')
 
     def test_documento_contexto_model(self):
         # Test valid data
         data = {
             'nombre': 'test',
             'descripcion': 'test',
-            'campos': [{'nombre': 'test', 'tipo': 'test', 'requerido': True}]
+            'campos': [{'nombre': 'test', 'tipo': 'test', 'requerido': True, 'descripcion': 'test'}]
         }
         model = DocumentoContexto(**data)
         self.assertEqual(model.nombre, 'test')

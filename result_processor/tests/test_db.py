@@ -23,7 +23,8 @@ class TestDB(unittest.TestCase):
             'documento_descripcion': ['desc1', 'desc1', 'desc2'],
             'campo_nombre': ['campo1', 'campo2', 'campo3'],
             'campo_tipo': ['tipo1', 'tipo2', 'tipo3'],
-            'requerido': [True, False, True]
+            'requerido': [True, False, True],
+            'campo_descripcion': ['desc_campo1', 'desc_campo2', 'desc_campo3']
         }
         df = pd.DataFrame(data)
         with patch('pandas.read_sql', return_value=df):

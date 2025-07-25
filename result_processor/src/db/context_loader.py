@@ -28,7 +28,8 @@ def context_loader():
             campo = CampoContexto(
                 nombre=row["campo_nombre"],
                 tipo=row["campo_tipo"],
-                requerido=row["requerido"]
+                requerido=row["requerido"],
+                descripcion=row["campo_descripcion"]
             )
             contexto[nombre_doc].campos.append(campo)
 
