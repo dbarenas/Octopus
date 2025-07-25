@@ -1,0 +1,4 @@
+langchain_aws
+pydantic
+langchain
+pandas

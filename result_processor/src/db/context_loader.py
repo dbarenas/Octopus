@@ -1,9 +1,9 @@
 # db/context.py
 
 import pandas as pd
-from db.connector import get_db_connection
-from db.queries import GET_CONTEXT_QUERY
-from models.context import DocumentoContexto, CampoContexto
+from src.db.connector import get_db_connection
+from src.db.queries import GET_CONTEXT_QUERY
+from src.models.context import DocumentoContexto, CampoContexto
 
 
 def context_loader():

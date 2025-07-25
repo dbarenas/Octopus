@@ -1,8 +1,8 @@
 # insert_results.py
 
-from db.connector import get_db_connection
-from models.result import ResultadoModel
-from queries import (
+from src.db.connector import get_db_connection
+from src.models.result import DocumentClassification
+from src.db.queries import (
     get_or_create_tipo_expediente,
     get_or_create_expediente,
     get_tipo_documento_id,
@@ -10,16 +10,7 @@ from queries import (
     insert_campos_extraidos
 )
 
-def insert_results(resultado_dict: dict):
-    try:
-        # 🔍 Validación automática con Pydantic
-        resultado = ResultadoModel(**resultado_dict)
-    except Exception as e:
-        return {
-            "status": "error",
-            "error": f"Error de validación: {str(e)}"
-        }
-
+def insert_results(resultado: DocumentClassification):
     conn = get_db_connection()
     try:
         with conn:
